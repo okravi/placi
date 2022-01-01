@@ -1,10 +1,19 @@
 package com.example.placi
 
+
+import android.Manifest
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.placi.databinding.ActivityAddHappyPlaceBinding
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +46,8 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding?.etDate?.setOnClickListener(this)
+        binding?.tvAddImage?.setOnClickListener(this)
+
 
     }
 
@@ -47,7 +58,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when(v!!.id){
-            R.id.et_date -> {
+           binding?.etDate?.id -> {
                 DatePickerDialog(
                     this@AddHappyPlaceActivity,
                     dateSetListener,
@@ -55,7 +66,35 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     cal.get(Calendar.MONTH),
                     cal.get(Calendar.DAY_OF_MONTH)).show()
             }
+            binding?.ivPlaceImage?.id ->{
+                val pictureDialog = AlertDialog.Builder(this)
+                pictureDialog.setTitle("Select action")
+                val pictureDialogItems = arrayOf("Select photo from gallery",
+                    "Capture photo from camera")
+                pictureDialog.setItems(pictureDialogItems){
+                    dialog, which ->
+                    when(which){
+                        0 -> choosePhotoFromGallery()
+                        1 -> Toast.makeText( this@AddHappyPlaceActivity,
+                        "Camera selection coming soon",
+                        Toast.LENGTH_SHORT).show()
+                    }
+                }
+                pictureDialog.show()
+            }
         }
+    }
+
+    private fun choosePhotoFromGallery() {
+        Dexter.withActivity(this).withPermissions(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ).withListener(object: MultiplePermissionsListener {
+            override fun onPermissionsChecked(report: MultiplePermissionsReport)
+            {/* ... */}
+            override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken)
+            {/* ... */}
+        }).check()
     }
 
     private fun updateDateInView(){
