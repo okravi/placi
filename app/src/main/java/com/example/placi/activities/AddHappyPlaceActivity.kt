@@ -1,4 +1,4 @@
-package com.example.placi
+package com.example.placi.activities
 
 
 import android.Manifest

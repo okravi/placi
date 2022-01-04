@@ -1,11 +1,9 @@
-package com.example.placi
+package com.example.placi.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import com.example.placi.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,8 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-
-        //setContentView(R.layout.activity_main)
 
         val fabAddHappyPlace = binding?.fabAddHappyPlace
         fabAddHappyPlace?.setOnClickListener {
