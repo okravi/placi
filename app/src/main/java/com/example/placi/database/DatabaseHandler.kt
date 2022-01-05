@@ -1,9 +1,11 @@
 package com.example.placi.database
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.telephony.TelephonyCallback
+import com.example.placi.models.HappyPlaceModel
 
 
 class DatabaseHandler(context: Context) :
@@ -37,8 +39,27 @@ class DatabaseHandler(context: Context) :
         db?.execSQL(CREATE_HAPPY_PLACE_TABLE)
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
+    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_HAPPY_PLACE")
+        onCreate(db)
+    }
+
+    fun addHappyPlace(happyPlace: HappyPlaceModel): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put(KEY_TITLE, happyPlace.title)
+        contentValues.put(KEY_IMAGE, happyPlace.image)
+        contentValues.put(KEY_DESCRIPTION, happyPlace.description)
+        contentValues.put(KEY_DATE, happyPlace.date)
+        contentValues.put(KEY_LOCATION, happyPlace.location)
+        contentValues.put(KEY_LATITUDE, happyPlace.latitude)
+        contentValues.put(KEY_LONGITUDE, happyPlace.longitude)
+
+        val result = db.insert(TABLE_HAPPY_PLACE, null, contentValues)
+
+        db.close()
+        return result
     }
 
 }
