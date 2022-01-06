@@ -18,7 +18,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.placi.database.DatabaseHandler
 import com.example.placi.databinding.ActivityAddHappyPlaceBinding
+import com.example.placi.models.HappyPlaceModel
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -61,7 +63,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             updateDateInView()
 
         }
-
+        updateDateInView()
         binding?.etDate?.setOnClickListener(this)
         binding?.tvAddImage?.setOnClickListener(this)
         binding?.btnSave?.setOnClickListener(this)
@@ -98,7 +100,41 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 pictureDialog.show()
             }
             binding?.btnSave?.id -> {
-                //TODO
+                Toast.makeText(this, "save clicked", Toast.LENGTH_SHORT).show()
+                when{
+                    (binding?.etTitle?.text.isNullOrEmpty() ||
+                            binding?.etDescription?.text.isNullOrEmpty() ||
+                            binding?.etDate?.text.isNullOrEmpty() ||
+                            binding?.etLocation?.text.isNullOrEmpty()) -> {
+                        Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    }
+                    saveImageToInternalStorage == null -> {
+                        Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
+                    }else ->{
+
+                    Log.e("debug", "trying to save to the DB")
+                        val happyPlaceModel = HappyPlaceModel(
+                            0,
+                            binding?.etTitle?.text.toString(),
+                            saveImageToInternalStorage.toString(),
+                            binding?.etDescription?.text.toString(),
+                            binding?.etDate?.text.toString(),
+                            binding?.etLocation?.text.toString(),
+                            mLatitude,
+                            mLongitude
+                        )
+                    val dbHandler = DatabaseHandler(this)
+                    val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
+
+                    if(addHappyPlace > 0){
+                        Log.e("debug", "everything seems to be fine")
+
+                        finish()
+
+                        }
+                    }
+
+                }
 
             }
         }
