@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.placi">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,9 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Placi">
         <activity
+            android:name=".activities.HappyPlaceDetailActivity"
+            android:exported="false"
+            android:label="HAPPY PLACE Details"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomNoActionBarTheme"
+            />
+        <activity
             android:name=".activities.AddHappyPlaceActivity"
             android:exported="false"
-
             android:label="ADD HAPPY PLACE"
             android:screenOrientation="portrait"
             android:theme="@style/CustomNoActionBarTheme" />

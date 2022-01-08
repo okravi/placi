@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
 
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
 
+        if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             getHappyPLacesListFromLocalDB()
             }else{

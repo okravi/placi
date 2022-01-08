@@ -70,11 +70,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-    }
-
     override fun onClick(v: View?) {
         when(v!!.id){
            binding?.etDate?.id -> {
@@ -254,5 +249,10 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         private const val GALLERY = 1
         private const val CAMERA = 2
         private const val IMAGE_DIRECTORY = "HappyPlacesImages"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }
