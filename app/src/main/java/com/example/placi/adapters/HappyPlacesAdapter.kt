@@ -15,6 +15,8 @@ open class HappyPlacesAdapter(
     private var list: ArrayList<HappyPlaceModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var OnClickRecyclerListener: OnClickListener? = null
+
     /**
      * Inflates the item views which is designed in xml layout file
      *
@@ -50,6 +52,12 @@ open class HappyPlacesAdapter(
             holder.itemView.tvTitle.text = model.title
 
             holder.itemView.tvDescription.text = model.description
+
+            holder.itemView.setOnClickListener{
+                if(OnClickRecyclerListener != null){
+                    OnClickRecyclerListener!!.onClick(position, model)
+                }
+            }
         }
     }
 
@@ -60,6 +68,14 @@ open class HappyPlacesAdapter(
         return list.size
     }
 
+    fun setOnClickListener(onClickListener: OnClickListener){
+        this.OnClickRecyclerListener = onClickListener
+    }
+
+
+    interface OnClickListener{
+        fun onClick(position: Int, model: HappyPlaceModel)
+    }
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */

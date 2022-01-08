@@ -36,6 +36,15 @@ class MainActivity : AppCompatActivity() {
         val placesAdapter = HappyPlacesAdapter(this, happyPlaceList)
         binding?.rvHappyPlacesList?.setHasFixedSize(true)
         binding?.rvHappyPlacesList?.adapter = placesAdapter
+
+        placesAdapter.setOnClickListener(object : HappyPlacesAdapter.OnClickListener{
+            override fun onClick(position: Int, model: HappyPlaceModel) {
+                val intent = Intent(this@MainActivity,
+                    HappyPlaceDetailActivity::class.java)
+                startActivity(intent)
+            }
+
+        })
     }
 
     private fun getHappyPLacesListFromLocalDB(){
