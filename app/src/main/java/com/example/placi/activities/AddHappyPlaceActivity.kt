@@ -127,8 +127,8 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
 
                     if(addHappyPlace > 0){
-                        Log.e("debug", "everything seems to be fine")
 
+                        setResult(Activity.RESULT_OK)
                         finish()
 
                         }

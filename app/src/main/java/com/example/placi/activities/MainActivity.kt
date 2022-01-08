@@ -1,5 +1,6 @@
 package com.example.placi.activities
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val fabAddHappyPlace = binding?.fabAddHappyPlace
         fabAddHappyPlace?.setOnClickListener {
             val intent = Intent(this, AddHappyPlaceActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
         }
         getHappyPLacesListFromLocalDB()
     }
@@ -48,6 +49,19 @@ class MainActivity : AppCompatActivity() {
             binding?.tvNoRecordsAvailable?.visibility = View.VISIBLE
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if ((requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE) && (resultCode == Activity.RESULT_OK)) {
+            getHappyPLacesListFromLocalDB()
+        }else{
+            Log.e("Activity", "Cancelled or Back pressed")
+        }
+    }
+
+    companion object {
+        var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
     }
 
     override fun onDestroy() {
