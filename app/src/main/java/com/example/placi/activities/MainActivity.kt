@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.placi.adapters.HappyPlacesAdapter
 import com.example.placi.database.DatabaseHandler
@@ -22,9 +23,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         val fabAddHappyPlace = binding?.fabAddHappyPlace
+
         fabAddHappyPlace?.setOnClickListener {
             val intent = Intent(this, AddHappyPlaceActivity::class.java)
-            startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
+            resultLauncher.launch(intent)
         }
         getHappyPLacesListFromLocalDB()
     }
@@ -51,14 +53,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if ((requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE) && (resultCode == Activity.RESULT_OK)) {
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            val data: Intent? = result.data
             getHappyPLacesListFromLocalDB()
-        }else{
-            Log.e("Activity", "Cancelled or Back pressed")
+            }else{
+                Log.e("Activity", "Cancelled or Back pressed")
+            }
         }
-    }
+
 
     companion object {
         var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
