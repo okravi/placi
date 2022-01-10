@@ -137,7 +137,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                     Log.e("debug", "trying to save to the DB")
                         val happyPlaceModel = HappyPlaceModel(
-                            0,
+                            if(mHappyPlaceDetails == null) 0 else mHappyPlaceDetails!!.id,
                             binding?.etTitle?.text.toString(),
                             saveImageToInternalStorage.toString(),
                             binding?.etDescription?.text.toString(),
@@ -147,14 +147,26 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             mLongitude
                         )
                     val dbHandler = DatabaseHandler(this)
-                    val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
 
-                    if(addHappyPlace > 0){
+                    if (mHappyPlaceDetails == null){
+                        Log.e("debug", "looks like we're saving new place")
+                        val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
 
-                        setResult(Activity.RESULT_OK)
-                        finish()
-
+                        if(addHappyPlace > 0){
+                            setResult(Activity.RESULT_OK)
+                            finish()
                         }
+                    }else{
+                        val updateHappyPlace = dbHandler.updateHappyPlace(happyPlaceModel)
+                        if(updateHappyPlace > 0){
+                            Log.e("debug", "looks like we're updating the DB record successfully")
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }
+                    }
+
+
+
                     }
 
                 }

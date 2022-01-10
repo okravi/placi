@@ -81,10 +81,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+//TODO check why is this piece of code not running
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
+        Log.e("Activity", "$result.resultCode")
         if (result.resultCode == Activity.RESULT_OK) {
+            Log.e("debug", "we should be updating places list next")
             val data: Intent? = result.data
             getHappyPLacesListFromLocalDB()
             }else{
