@@ -14,7 +14,7 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
     private val intrinsicWidth = deleteIcon!!.intrinsicWidth
     private val intrinsicHeight = deleteIcon!!.intrinsicHeight
     private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#24AE05")
+    private val backgroundColor = Color.parseColor("#f44336")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
 
@@ -34,8 +34,8 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
     }
 
     override fun onChildDraw(
-            c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-            dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
+        c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+        dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
     ) {
 
         val itemView = viewHolder.itemView
@@ -43,19 +43,19 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
         val isCanceled = dX == 0f && !isCurrentlyActive
 
         if (isCanceled) {
-            clearCanvas(c, itemView.left + dX, itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
+            clearCanvas(c, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
 
-        // Draw the green delete background
+        // Draw the red delete background
         background.color = backgroundColor
-        background.setBounds(itemView.left + dX.toInt(), itemView.top, itemView.left, itemView.bottom)
+        background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
         background.draw(c)
 
         // Calculate position of delete icon
         val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
-        val deleteIconMargin = (itemHeight - intrinsicHeight)
+        val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
         val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth
         val deleteIconRight = itemView.right - deleteIconMargin
         val deleteIconBottom = deleteIconTop + intrinsicHeight
@@ -71,4 +71,4 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
         c?.drawRect(left, top, right, bottom, clearPaint)
     }
 }
-// END
+// END// END
