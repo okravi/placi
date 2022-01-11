@@ -29,11 +29,15 @@ class MainActivity : AppCompatActivity() {
         val fabAddHappyPlace = binding?.fabAddHappyPlace
 
         fabAddHappyPlace?.setOnClickListener {
+
             val intent = Intent(this, AddHappyPlaceActivity::class.java)
-            resultLauncher.launch(intent)
+            startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
+
         }
         getHappyPLacesListFromLocalDB()
     }
+
+
 
     private fun setupHappyPlacesRecyclerView(happyPlaceList: ArrayList<HappyPlaceModel>){
         binding?.rvHappyPlacesList?.layoutManager = LinearLayoutManager(this)
@@ -67,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getHappyPLacesListFromLocalDB(){
+
         val dbHandler = DatabaseHandler(this)
         val getHappyPlaceList : ArrayList<HappyPlaceModel> = dbHandler.getHappyPlacesList()
 
@@ -81,17 +86,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//TODO check why is this piece of code not running
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        Log.e("Activity", "$result.resultCode")
-        if (result.resultCode == Activity.RESULT_OK) {
-            Log.e("debug", "we should be updating places list next")
-            val data: Intent? = result.data
-            getHappyPLacesListFromLocalDB()
-            }else{
-                Log.e("Activity", "Cancelled or Back pressed")
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        if (requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                getHappyPLacesListFromLocalDB()
+            } else {
+                Log.e("Activity", "Cancelled or Back Pressed")
             }
         }
+    }
+
 
 
     companion object {

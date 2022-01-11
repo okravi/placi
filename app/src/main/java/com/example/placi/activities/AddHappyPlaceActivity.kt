@@ -123,7 +123,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 pictureDialog.show()
             }
             binding?.btnSave?.id -> {
-                Toast.makeText(this, "save clicked", Toast.LENGTH_SHORT).show()
+
                 when{
                     (binding?.etTitle?.text.isNullOrEmpty() ||
                             binding?.etDescription?.text.isNullOrEmpty() ||
@@ -135,7 +135,6 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
                     }else ->{
 
-                    Log.e("debug", "trying to save to the DB")
                         val happyPlaceModel = HappyPlaceModel(
                             if(mHappyPlaceDetails == null) 0 else mHappyPlaceDetails!!.id,
                             binding?.etTitle?.text.toString(),
@@ -148,8 +147,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         )
                     val dbHandler = DatabaseHandler(this)
 
+
                     if (mHappyPlaceDetails == null){
-                        Log.e("debug", "looks like we're saving new place")
+
                         val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
 
                         if(addHappyPlace > 0){
@@ -157,9 +157,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             finish()
                         }
                     }else{
+                        setResult(Activity.RESULT_CANCELED)
                         val updateHappyPlace = dbHandler.updateHappyPlace(happyPlaceModel)
+
                         if(updateHappyPlace > 0){
-                            Log.e("debug", "looks like we're updating the DB record successfully")
+
                             setResult(Activity.RESULT_OK)
                             finish()
                         }
