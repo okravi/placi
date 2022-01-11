@@ -15,6 +15,7 @@ import com.example.placi.database.DatabaseHandler
 import com.example.placi.databinding.ActivityMainBinding
 import com.example.placi.models.HappyPlaceModel
 import kotlinx.android.synthetic.main.activity_main.*
+import pl.kitek.rvswipetodelete.SwipeToDeleteCallback
 import pl.kitek.rvswipetodelete.SwipeToEditCallback
 
 class MainActivity : AppCompatActivity() {
@@ -60,11 +61,22 @@ class MainActivity : AppCompatActivity() {
                 val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
                 adapter.notifyEditItem(this@MainActivity, viewHolder.adapterPosition, ADD_PLACE_ACTIVITY_REQUEST_CODE)
             }
-
         }
 
         val editItemTouchHandler = ItemTouchHelper(editSwipeHandler)
         editItemTouchHandler.attachToRecyclerView(rv_happy_places_list)
+
+        val deleteSwipeHandler = object : SwipeToDeleteCallback(this){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+
+                getHappyPLacesListFromLocalDB()
+            }
+        }
+
+        val deleteItemTouchHandler = ItemTouchHelper(deleteSwipeHandler)
+        deleteItemTouchHandler.attachToRecyclerView(rv_happy_places_list)
     }
 
 
