@@ -18,9 +18,14 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.placi.R
 import com.example.placi.database.DatabaseHandler
 import com.example.placi.databinding.ActivityAddHappyPlaceBinding
 import com.example.placi.models.HappyPlaceModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -33,6 +38,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.lang.Exception
+import java.lang.ref.ReferenceQueue
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -68,6 +75,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
         }
 
+        if(!Places.isInitialized()){
+            Places.initialize(this@AddHappyPlaceActivity,
+                resources.getString(R.string.google_maps_api_key))
+        }
+
         if(intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){
             mHappyPlaceDetails = intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS)
                     as HappyPlaceModel
@@ -95,6 +107,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         binding?.etDate?.setOnClickListener(this)
         binding?.tvAddImage?.setOnClickListener(this)
         binding?.btnSave?.setOnClickListener(this)
+        binding?.etLocation?.setOnClickListener(this)
 
     }
 
@@ -174,35 +187,64 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
             }
+
+            R.id.et_location ->{
+                try{
+                    val fields = listOf(
+                        Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
+                        Place.Field.ADDRESS
+                    )
+
+                    val intent =
+                        Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields,)
+                            .build(this@AddHappyPlaceActivity)
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_CODE)
+
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
-            if(requestCode ==  GALLERY){
-                if(data != null){
-                    val contentURI = data.data
-                    val testURI = data.extras
-                    try {
-                        val selectedImageBitmap = MediaStore.Images.Media
-                            .getBitmap(this.contentResolver, contentURI)
-                        saveImageToInternalStorage = saveImageToInternalStorage(selectedImageBitmap)
-                        Log.e("Saved image: ", "PAth :: $saveImageToInternalStorage")
-                        binding?.ivPlaceImage?.setImageBitmap(selectedImageBitmap)
-                    }catch (e: IOException){
-                        e.printStackTrace()
-                        Toast.makeText(this@AddHappyPlaceActivity, "Failed to load the image",
-                            Toast.LENGTH_SHORT).show()
+            when (requestCode) {
+
+                GALLERY -> {
+                    if(data != null){
+                        val contentURI = data.data
+                        val testURI = data.extras
+                        try {
+                            val selectedImageBitmap = MediaStore.Images.Media
+                                .getBitmap(this.contentResolver, contentURI)
+                            saveImageToInternalStorage = saveImageToInternalStorage(selectedImageBitmap)
+                            Log.e("Saved image: ", "PAth :: $saveImageToInternalStorage")
+                            binding?.ivPlaceImage?.setImageBitmap(selectedImageBitmap)
+                        }catch (e: IOException){
+                            e.printStackTrace()
+                            Toast.makeText(this@AddHappyPlaceActivity, "Failed to load the image",
+                                Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
-            }else if (requestCode == CAMERA){
-                val thumbnail : Bitmap = data!!.extras!!.get("data") as Bitmap
 
-                saveImageToInternalStorage = saveImageToInternalStorage(thumbnail)
-                Log.e("Saved image: ", "PAth :: $saveImageToInternalStorage")
+                CAMERA -> {
+                    val thumbnail : Bitmap = data!!.extras!!.get("data") as Bitmap
 
-                binding?.ivPlaceImage?.setImageBitmap(thumbnail)
+                    saveImageToInternalStorage = saveImageToInternalStorage(thumbnail)
+                    Log.e("Saved image: ", "PAth :: $saveImageToInternalStorage")
+
+                    binding?.ivPlaceImage?.setImageBitmap(thumbnail)
+                }
+
+                PLACE_AUTOCOMPLETE_CODE -> {
+                    val place: Place = Autocomplete.getPlaceFromIntent(data!!)
+                    et_location.setText(place.address)
+                    mLatitude = place.latLng!!.latitude
+                    mLongitude = place.latLng!!.longitude
+                }
             }
         }
     }
@@ -291,6 +333,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         private const val GALLERY = 1
         private const val CAMERA = 2
         private const val IMAGE_DIRECTORY = "HappyPlacesImages"
+        private const val PLACE_AUTOCOMPLETE_CODE = 3
     }
 
     override fun onDestroy() {
