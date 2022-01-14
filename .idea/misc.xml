@@ -5,7 +5,10 @@
       <map>
         <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/activity_add_happy_place.xml" value="0.20244565217391305" />
         <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/activity_happy_place_detail.xml" value="0.2078804347826087" />
+        <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/activity_main.xml" value="0.18819655521783182" />
         <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/activity_map.xml" value="0.21875" />
+        <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/fragment_maps.xml" value="0.38697916666666665" />
+        <entry key="..\:/Kotlin-prodjects-current/placi/app/src/main/res/layout/item_happy_place.xml" value="0.18819655521783182" />
       </map>
     </option>
   </component>
