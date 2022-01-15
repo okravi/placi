@@ -38,8 +38,21 @@ class GetAddressFromLatLong (
         return ""
     }
 
-    override fun onPostExecute(result: String?) {
-        super.onPostExecute(result)
+    override fun onPostExecute(resultString: String?) {
+        if(resultString == null){
+            mAddressListener.onError()
+        }else{
+            mAddressListener.onAddressFound(resultString)
+        }
+        super.onPostExecute(resultString)
+    }
+
+    fun setAddressListener(addressListener: AddressListener){
+        mAddressListener = addressListener
+    }
+
+    fun getAddress(){
+        execute()
     }
 
     interface AddressListener{

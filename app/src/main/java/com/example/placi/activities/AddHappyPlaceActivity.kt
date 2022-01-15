@@ -27,6 +27,7 @@ import com.example.placi.R
 import com.example.placi.database.DatabaseHandler
 import com.example.placi.databinding.ActivityAddHappyPlaceBinding
 import com.example.placi.models.HappyPlaceModel
+import com.example.placi.utils.GetAddressFromLatLong
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.libraries.places.api.Places
@@ -133,9 +134,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private fun requestNewLocationData(){
         var mLocationRequest = LocationRequest()
         mLocationRequest.priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
-        mLocationRequest.interval = 100
+        mLocationRequest.interval = 0
+        mLocationRequest.fastestInterval = 0
         mLocationRequest.numUpdates = 1
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallBack,
             Looper.myLooper()!!
         )
@@ -148,6 +151,23 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             Log.i("Latitude", "$mLatitude")
             mLongitude = mLastLocation.longitude
             Log.i("Longitude", "$mLongitude")
+
+            val addressTask = GetAddressFromLatLong(this@AddHappyPlaceActivity,
+                mLatitude, mLongitude)
+            addressTask.setAddressListener(object:
+                GetAddressFromLatLong.AddressListener{
+
+                override fun onAddressFound(address: String) {
+                    et_location.setText(address)
+                }
+
+                override fun onError() {
+                    Log.e("Get Address ::", "Something is wrong")
+                }
+            })
+            addressTask.getAddress()
+
+
         }
     }
 
@@ -268,7 +288,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         .withListener(object : MultiplePermissionsListener {
                             override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                                 if (report!!.areAllPermissionsGranted()) {
-
+                                    Log.e("debug", "we should be trying to get the current location now/AddHappyPlaceActivity.kt")
                                     requestNewLocationData()
                                 }
                             }

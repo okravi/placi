@@ -46,7 +46,7 @@ private var mHappyPlaceDetails: HappyPlaceModel? = null
         val position = LatLng(mHappyPlaceDetails!!.latitude, mHappyPlaceDetails!!.longitude)
         mMap.addMarker(MarkerOptions().position(position).title(mHappyPlaceDetails!!.location))
 
-        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(position, 18f)
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(position, 15f)
         mMap.animateCamera(newLatLngZoom)
     }
 }
